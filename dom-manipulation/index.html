@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Quote Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Dynamic Quote Generator</h1>
+  </header>
+
+  <main>
+    <section id="quoteSection">
+      <h2>Quote</h2>
+      <figure>
+        <blockquote id="quoteDisplay">
+          <!-- Quote will be displayed here -->
+          Click "Show New Quote" to generate one.
+        </blockquote>
+        <figcaption id="authorDisplay">
+          <!-- Author will be displayed here -->
+        </figcaption>
+      </figure>
+      <button id="newQuote">Show New Quote</button>
+    </section>
+
+    <section id="categorySection">
+      <h2>Categories</h2>
+      <div id="categoryList">
+        <!-- Categories will be displayed here -->
+      </div>
+    </section>
+
+    <section id="addQuoteSection">
+      <h2>Add a New Quote</h2>
+      <form id="addQuoteForm">
+        <label for="quoteText">Quote:</label>
+        <textarea id="quoteText" name="quoteText" rows="4" required></textarea>
+
+        <label for="author">Author:</label>
+        <input type="text" id="author" name="author" required>
+
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+          <!-- Options will be dynamically added here -->
+          <option value="" disabled selected>Select a Category</option>
+        </select>
+
+        <button type="submit">Add Quote</button>
+      </form>
+    </section>
+
+    <section id="addCategorySection">
+      <h2>Add a New Category</h2>
+      <form id="addCategoryForm">
+        <label for="newCategory">Category Name:</label>
+        <input type="text" id="newCategory" name="newCategory" required>
+        <button type="submit">Add Category</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; [Your Name/Organization] 2023</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
