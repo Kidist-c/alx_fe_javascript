@@ -14,14 +14,14 @@ let quotes = [
   // Function to Display a Random Quote
   function showRandomQuote() {
     if (quotes.length === 0) {
-      quoteDisplay.textContent = "No quotes available.";
+      quoteDisplay.innerHTML = "No quotes available."; // Use innerHTML
       return;
     }
   
     const randomIndex = Math.floor(Math.random() * quotes.length);
     const randomQuote = quotes[randomIndex];
   
-    quoteDisplay.textContent = randomQuote.text;
+    quoteDisplay.innerHTML = randomQuote.text; // Use innerHTML
   }
   
   // Function to Add a New Quote
