@@ -51,4 +51,137 @@ let quotes = [
   // Initial quote display on page load
   showRandomQuote();
   
-  
+  // Using Local Storage
+
+// Function to load quotes from local storage
+function loadQuotesFromLocalStorage() {
+  const storedQuotes = localStorage.getItem('quotes');
+  if (storedQuotes) {
+    quotes = JSON.parse(storedQuotes);
+  }
+  updateQuoteList(); // Refresh the display after loading
+}
+
+// Function to save quotes to local storage
+function saveQuotesToLocalStorage() {
+  localStorage.setItem('quotes', JSON.stringify(quotes));
+}
+
+// Modify the addQuote function to also save to local storage
+function addQuote() {
+  const newQuoteText = document.getElementById('newQuote').value;
+  if (newQuoteText.trim() !== '') {
+    quotes.push(newQuoteText);
+    updateQuoteList();
+    saveQuotesToLocalStorage(); // Save after adding a quote
+    document.getElementById('newQuote').value = ''; // Clear input
+  }
+}
+
+// Call loadQuotesFromLocalStorage when the page loads
+window.onload = function() {
+  loadQuotesFromLocalStorage();
+};
+
+
+// Using Session Storage (Optional)
+
+// Function to save the last viewed quote index to session storage
+function saveLastViewedQuoteIndex(index) {
+  sessionStorage.setItem('lastViewedQuoteIndex', index);
+}
+
+// Function to retrieve the last viewed quote index from session storage
+function getLastViewedQuoteIndex() {
+  const index = sessionStorage.getItem('lastViewedQuoteIndex');
+  return index ? parseInt(index, 10) : 0; // Default to 0 if not found
+}
+
+// Example usage in the displayQuote function (modify as needed)
+function displayQuote() {
+  let index = Math.floor(Math.random() * quotes.length);
+  const quoteElement = document.getElementById('quoteDisplay');
+
+  // Try to get last viewed index
+  const lastViewedIndex = getLastViewedQuoteIndex();
+
+  // If the last viewed index is valid, use it. Otherwise random as before.
+  if (lastViewedIndex >= 0 && lastViewedIndex < quotes.length) {
+      index = lastViewedIndex;
+  }
+
+  quoteElement.textContent = quotes[index];
+  saveLastViewedQuoteIndex(index); // Store the current index
+
+  // Update the active class on the list
+  updateQuoteList(index);
+}
+// JSON Export
+
+// Function to export quotes to a JSON file
+function exportQuotesToJson() {
+  const jsonString = JSON.stringify(quotes, null, 2); // null, 2 for pretty formatting
+  const blob = new Blob([jsonString], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'quotes.json';
+  document.body.appendChild(a); // Append to the DOM
+  a.click();
+  document.body.removeChild(a); // Remove from the DOM
+  URL.revokeObjectURL(url); // Clean up the URL
+}
+
+// Add an export button (HTML example - add to your HTML file)
+// <button onclick="exportQuotesToJson()">Export Quotes</button>
+
+
+// JSON Import
+
+// Function to import quotes from a JSON file
+function importQuotesFromJson(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const importedQuotes = JSON.parse(e.target.result);
+        if (Array.isArray(importedQuotes)) {
+          quotes = importedQuotes; // Replace existing quotes
+          updateQuoteList();
+          saveQuotesToLocalStorage();
+          alert('Quotes imported successfully!');
+        } else {
+          alert('Invalid JSON format.  Must be an array of strings.');
+        }
+      } catch (error) {
+        alert('Error parsing JSON file: ' + error);
+      }
+    };
+    reader.readAsText(file);
+  }
+}
+
+// Add a file input element (HTML example - add to your HTML file)
+// <input type="file" id="importFile" accept=".json" onchange="importQuotesFromJson(event)">
+function importQuotesFromJson(event) {
+  // ...
+  reader.onload = function(e) {
+    try {
+      const importedQuotes = JSON.parse(e.target.result);
+      console.log("Imported quotes:", importedQuotes); // Add this line for debugging
+      if (Array.isArray(importedQuotes)) {
+        quotes = importedQuotes; // Replace existing quotes
+        updateQuoteList();
+        saveQuotesToLocalStorage();
+        alert('Quotes imported successfully!');
+      } else {
+        alert('Invalid JSON format.  Must be an array of strings.');
+      }
+    } catch (error) {
+      console.error("JSON parsing error:", error);  // Log the error
+      alert('Error parsing JSON file: ' + error);
+    }
+  };
+  // ...
+}
