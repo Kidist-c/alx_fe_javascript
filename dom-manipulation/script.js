@@ -115,6 +115,57 @@ function displayQuote() {
 
   // Update the active class on the list
   updateQuoteList(index);
+  // createAddQuoteForm functionality (add to your script.js):
+
+function createAddQuoteForm() {
+  const formContainer = document.createElement('div');
+  formContainer.id = 'addQuoteFormContainer'; // added ID for easier styling
+
+  const label = document.createElement('label');
+  label.textContent = 'New Quote:';
+  label.setAttribute('for', 'newQuoteInput'); // accessibility
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.id = 'newQuoteInput';
+  input.name = 'newQuote';  // for form processing if needed
+  input.placeholder = 'Enter your quote here';
+  input.required = true;  // basic validation
+
+  const addButton = document.createElement('button');
+  addButton.textContent = 'Add Quote';
+  addButton.type = 'button'; // important to prevent form submission if within a form
+  addButton.addEventListener('click', addQuoteFromForm);  // different add function
+
+  // add button should not automatically submit the form
+
+
+  formContainer.appendChild(label);
+  formContainer.appendChild(input);
+  formContainer.appendChild(addButton);
+
+  return formContainer;
+}
+
+
+function addQuoteFromForm() { // New function to handle add from the form
+  const newQuoteText = document.getElementById('newQuoteInput').value;
+  if (newQuoteText.trim() !== '') {
+      quotes.push(newQuoteText);
+      updateQuoteList();
+      saveQuotesToLocalStorage(); // Save after adding a quote
+      document.getElementById('newQuoteInput').value = ''; // Clear input
+  }
+}
+
+
+// Call this function somewhere to add the form to the DOM:
+// For example, you can append it to a specific element with id 'content':
+// document.getElementById('content').appendChild(createAddQuoteForm());
+
+// or add it to the body
+// document.body.appendChild(createAddQuoteForm());
+
 }
 // JSON Export
 
