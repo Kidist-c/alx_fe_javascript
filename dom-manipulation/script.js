@@ -415,4 +415,104 @@ function addQuoteFromForm() {
       localStorage.setItem('quotes', JSON.stringify(quotes));
   }
 }
+// --- Configuration ---
+const API_URL = 'https://jsonplaceholder.typicode.com/posts'; // Using JSONPlaceholder for mock data
+const SYNC_INTERVAL = 5000; // Sync every 5 seconds
+
+// --- Fetching Data from Server ---
+async function fetchRemoteQuotes() {
+    try {
+        const response = await fetch(API_URL);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const remoteQuotes = await response.json();
+        return remoteQuotes.map(quote => ({
+            text: quote.title, // Map title to text and add ID since it's not on local
+            category: 'Server',  // Give all these quotes the category 'Server'
+            id: quote.id,
+        }));
+    } catch (error) {
+        console.error('Failed to fetch quotes:', error);
+        displayNotification('Failed to fetch updates from the server.');
+        return [];
+    }
+}
+
+// --- Sync Data with Server ---
+async function syncData() {
+    const remoteQuotes = await fetchRemoteQuotes();
+
+    if (remoteQuotes.length > 0) {
+        // Conflict resolution: Server data takes precedence
+
+        // Merge
+        remoteQuotes.forEach(newQuote => {
+            let exists = false;
+           quotes.forEach(oldQuote => {
+                if(oldQuote.id === newQuote.id) {
+                   exists = true;
+                }
+           });
+           if (!exists) {
+               quotes.push(newQuote);
+           }
+        });
+
+       // remove the new quote and show conflict
+       const newQuotes = JSON.stringify(remoteQuotes);
+       const localQuotes = JSON.stringify(quotes);
+
+       if(newQuotes !== localQuotes) {
+            displayNotification('New quotes received from server.');
+       }
+
+        saveQuotesToLocalStorage();
+
+        // Redraw the list.
+        populateCategories();
+        filterQuotes();
+        updateQuoteList();
+        saveQuotesToLocalStorage();
+    } else {
+        console.log("No quotes fetched.");
+    }
+}
+
+
+// --- UI Notifications ---
+function displayNotification(message) {
+    const notificationDiv = document.createElement('div');
+    notificationDiv.textContent = message;
+    notificationDiv.classList.add('notification'); // Add a class for styling
+    document.body.appendChild(notificationDiv);
+
+    // Remove the notification after a few seconds
+    setTimeout(() => {
+        notificationDiv.remove();
+    }, 3000);
+}
+
+// --- Manual Conflict Resolution (Placeholder) ---
+function resolveConflict(quoteId) {
+    // This would need to be implemented to show a UI for managing conflicts
+    console.log(`Resolve conflict for quote with ID: ${quoteId}`);
+    alert(`Resolving conflict for quote with ID: ${quoteId} - Not fully implemented`);
+}
+
+// --- Event Listeners ---
+document.getElementById('addQuoteButton').addEventListener('click', addQuoteFromForm); // You'll need to add id="addQuoteButton" to your add button.
+categoryFilter.addEventListener('change', filterQuotes);
+
+// --- Initialization ---
+window.onload = () => {
+    loadQuotesFromLocalStorage(); // Load from local storage first
+    populateCategories();
+    filterQuotes();
+    updateQuoteList();
+
+    // Start periodic sync
+    setInterval(syncData, SYNC_INTERVAL);
+    syncData();
+};
   
