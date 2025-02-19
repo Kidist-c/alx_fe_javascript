@@ -515,4 +515,22 @@ window.onload = () => {
     setInterval(syncData, SYNC_INTERVAL);
     syncData();
 };
-  
+// --- fetchQuotesFromServer ---
+async function fetchQuotesFromServer() {
+  try {
+      const response = await fetch(API_URL);
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const fetchedQuotes = await response.json();
+      return fetchedQuotes.map(quote => ({ // Use Map to conform to the way we store the quotes
+          text: quote.title,
+          category: 'Server',  // You could fetch categories too, from another endpoint
+          id: quote.id // This is important for conflict resolution
+      }));
+  } catch (error) {
+      console.error("Fetching data failed: ", error);
+      return []; // Return an empty array in case of failure
+  }
+}
+
