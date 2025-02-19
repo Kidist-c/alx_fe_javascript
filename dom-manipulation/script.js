@@ -533,4 +533,27 @@ async function fetchQuotesFromServer() {
       return []; // Return an empty array in case of failure
   }
 }
+// --- fetchQuotesFromServer ---
+async function fetchQuotesFromServer(newQuote) {
+  try {
+      const response = await fetch(API_URL, {
+          method: 'POST',  // Specify the method as POST
+          headers: {
+              'Content-Type': 'application/json'  // Set the Content-Type header
+          },
+          body: JSON.stringify(newQuote)  // Convert the newQuote object to JSON string
+      });
+
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const fetchedQuote = await response.json();  // Parse the JSON response from the server
+      return fetchedQuote;  // Return the new quote received from the server, possibly including an ID
+  } catch (error) {
+      console.error("Fetching data failed: ", error);
+      return null; // Return null in case of failure
+  }
+}
+
 
