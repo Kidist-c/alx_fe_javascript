@@ -59,6 +59,11 @@
         <label for="newCategory">Category Name:</label>
         <input type="text" id="newCategory" name="newCategory" required>
         <button type="submit">Add Category</button>
+        <h2>Category Filter</h2>
+        <select id="categoryFilter" onchange="filterQuotes()">
+          <option value="all">All Categories</option>
+          <!-- Dynamically populated categories will be added here by JavaScript -->
+        </select>
         <h2>Import/Export</h2>
         <button onclick="exportQuotesToJson()">Export Quotes</button>  <!-- Export Button -->
         <input type="file" id="importFile" accept=".json" onchange="importQuotesFromJson(event)">  <!-- Import File Input -->
